@@ -25,7 +25,6 @@ describe("Notes API", () => {
         const email = `note-user-${Date.now()}@example.com`;
         const password = "password123";
 
-        // Create a test user
         const registerResponse = await request(app)
             .post("/api/auth/register")
             .send({
@@ -38,7 +37,6 @@ describe("Notes API", () => {
 
         const token = registerResponse.body.data.token;
 
-        // Create a note using the JWT
         const response = await request(app)
             .post("/api/notes")
             .set("Authorization", `Bearer ${token}`)
@@ -70,7 +68,6 @@ describe("Notes API", () => {
         const email = `get-notes-${Date.now()}@example.com`;
         const password = "password123";
 
-        // Create a test user
         const registerResponse = await request(app)
             .post("/api/auth/register")
             .send({
@@ -83,7 +80,6 @@ describe("Notes API", () => {
 
         const token = registerResponse.body.data.token;
 
-        // Create the first note
         await request(app)
             .post("/api/notes")
             .set("Authorization", `Bearer ${token}`)
@@ -92,7 +88,6 @@ describe("Notes API", () => {
                 content: "First note content"
             });
 
-        // Create the second note
         await request(app)
             .post("/api/notes")
             .set("Authorization", `Bearer ${token}`)
@@ -101,7 +96,6 @@ describe("Notes API", () => {
                 content: "Second note content"
             });
 
-        // Get all notes
         const response = await request(app)
             .get("/api/notes")
             .set("Authorization", `Bearer ${token}`);
@@ -125,7 +119,6 @@ describe("Notes API", () => {
         const email = `single-note-${Date.now()}@example.com`;
         const password = "password123";
 
-        // Create a test user
         const registerResponse = await request(app)
             .post("/api/auth/register")
             .send({
@@ -138,7 +131,6 @@ describe("Notes API", () => {
 
         const token = registerResponse.body.data.token;
 
-        // Create a note
         const createResponse = await request(app)
             .post("/api/notes")
             .set("Authorization", `Bearer ${token}`)
@@ -151,7 +143,6 @@ describe("Notes API", () => {
 
         const noteId = createResponse.body.data._id;
 
-        // Get the specific note
         const response = await request(app)
             .get(`/api/notes/${noteId}`)
             .set("Authorization", `Bearer ${token}`);
@@ -173,7 +164,6 @@ describe("Notes API", () => {
         const email = `update-note-${Date.now()}@example.com`;
         const password = "password123";
 
-        // Create a test user
         const registerResponse = await request(app)
             .post("/api/auth/register")
             .send({
@@ -186,7 +176,6 @@ describe("Notes API", () => {
 
         const token = registerResponse.body.data.token;
 
-        // Create a note
         const createResponse = await request(app)
             .post("/api/notes")
             .set("Authorization", `Bearer ${token}`)
@@ -199,7 +188,6 @@ describe("Notes API", () => {
 
         const noteId = createResponse.body.data._id;
 
-        // Update the note
         const response = await request(app)
             .put(`/api/notes/${noteId}`)
             .set("Authorization", `Bearer ${token}`)
@@ -246,7 +234,6 @@ describe("Notes API", () => {
 
         const token = registerResponse.body.data.token;
 
-        // Create a note
         const createResponse = await request(app)
             .post("/api/notes")
             .set("Authorization", `Bearer ${token}`)
@@ -259,7 +246,6 @@ describe("Notes API", () => {
 
         const noteId = createResponse.body.data._id;
 
-        // Delete the note
         const response = await request(app)
             .delete(`/api/notes/${noteId}`)
             .set("Authorization", `Bearer ${token}`);
@@ -270,7 +256,6 @@ describe("Notes API", () => {
             "Note deleted successfully."
         );
 
-        // Confirm the note no longer exists
         const getResponse = await request(app)
             .get(`/api/notes/${noteId}`)
             .set("Authorization", `Bearer ${token}`);
@@ -313,7 +298,6 @@ describe("Notes API", () => {
 
         const tokenB = userBResponse.body.data.token;
 
-        // User A creates a note
         const createResponse = await request(app)
             .post("/api/notes")
             .set("Authorization", `Bearer ${tokenA}`)
@@ -326,7 +310,6 @@ describe("Notes API", () => {
 
         const noteId = createResponse.body.data._id;
 
-        // User B tries to read User A's note
         const getResponse = await request(app)
             .get(`/api/notes/${noteId}`)
             .set("Authorization", `Bearer ${tokenB}`);
@@ -337,7 +320,6 @@ describe("Notes API", () => {
             "Note not found."
         );
 
-        // User B tries to update User A's note
         const updateResponse = await request(app)
             .put(`/api/notes/${noteId}`)
             .set("Authorization", `Bearer ${tokenB}`)
@@ -351,7 +333,6 @@ describe("Notes API", () => {
             "Note not found."
         );
 
-        // User B tries to delete User A's note
         const deleteResponse = await request(app)
             .delete(`/api/notes/${noteId}`)
             .set("Authorization", `Bearer ${tokenB}`);
@@ -362,7 +343,6 @@ describe("Notes API", () => {
             "Note not found."
         );
 
-        // Confirm User A's note still exists
         const ownerCheckResponse = await request(app)
             .get(`/api/notes/${noteId}`)
             .set("Authorization", `Bearer ${tokenA}`);
@@ -377,7 +357,6 @@ describe("Notes API", () => {
         const email = `invalid-note-${Date.now()}@example.com`;
         const password = "password123";
 
-        // Create a test user
         const registerResponse = await request(app)
             .post("/api/auth/register")
             .send({
@@ -390,7 +369,6 @@ describe("Notes API", () => {
 
         const token = registerResponse.body.data.token;
 
-        // Try to create a note without a title
         const response = await request(app)
             .post("/api/notes")
             .set("Authorization", `Bearer ${token}`)
