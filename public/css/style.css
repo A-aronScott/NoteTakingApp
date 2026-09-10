@@ -1,6 +1,4 @@
-/* =========================
-   RESET & BASE
-========================= */
+/* RESET & BASE */
 
 * {
     box-sizing: border-box;
@@ -28,9 +26,7 @@ button {cursor: pointer;
 }
 
 
-/* =========================
-   APP
-========================= */
+/* APP */
 
 #app {
     width: 100%;
@@ -39,9 +35,7 @@ button {cursor: pointer;
 }
 
 
-/* =========================
-   SCREENS
-========================= */
+/* SCREENS */
 
 .screen {
     width: 100%;
@@ -49,9 +43,7 @@ button {cursor: pointer;
 }
 
 
-/* =========================
-   AUTH SCREEN
-========================= */
+/* AUTH SCREEN */
 
 #auth-screen {
     display: flex;
@@ -100,9 +92,7 @@ button {cursor: pointer;
 }
 
 
-/* =========================
-   FORMS
-========================= */
+/* FORMS */
 
 .form-group {
     margin-bottom: 18px;
@@ -154,9 +144,7 @@ button {cursor: pointer;
 }
 
 
-/* =========================
-   BUTTONS
-========================= */
+/* BUTTONS */
 
 .primary-button {
     border: none;
@@ -212,9 +200,7 @@ button {cursor: pointer;
 }
 
 
-/* =========================
-   MAIN APPLICATION
-========================= */
+/* MAIN APPLICATION */
 
 #notes-screen {
     display: flex;
@@ -223,9 +209,7 @@ button {cursor: pointer;
 }
 
 
-/* =========================
-   SIDEBAR
-========================= */
+/* SIDEBAR */
 
 .sidebar {
     width: 260px;
@@ -269,9 +253,7 @@ button {cursor: pointer;
 }
 
 
-/* =========================
-   SEARCH
-========================= */
+/* SEARCH */
 
 .search-container {
     margin-top: 20px;
@@ -295,9 +277,7 @@ button {cursor: pointer;
 }
 
 
-/* =========================
-   NAVIGATION
-========================= */
+/* NAVIGATION */
 
 .sidebar-nav {
     display: flex;
@@ -336,9 +316,7 @@ button {cursor: pointer;
 }
 
 
-/* =========================
-   SIDEBAR USER
-========================= */
+/* SIDEBAR USER */
 
 .sidebar-user {
     margin-top: auto;
@@ -387,9 +365,7 @@ button {cursor: pointer;
 }
 
 
-/* =========================
-   MAIN CONTENT
-========================= */
+/* MAIN CONTENT */
 
 .main-content {
     flex: 1;
@@ -405,9 +381,7 @@ button {cursor: pointer;
 }
 
 
-/* =========================
-   NOTES PANEL
-========================= */
+/* NOTES PANEL */
 
 .notes-panel {
     min-width: 0;
@@ -440,17 +414,27 @@ button {cursor: pointer;
 
 .notes-list {
     flex: 1;
-
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
 }
 
+.note-card {
+    display: block;
+    width: 100%;
+    flex-shrink: 0;
+    padding: 18px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background 0.15s;
+}
 
-/* =========================
-   NOTE CARDS
-========================= */
+
+/* NOTE CARDS */
 
 .note-card {
     padding: 18px 20px;
+
 
     border-bottom: 1px solid #f0f0f0;
 
@@ -509,9 +493,7 @@ button {cursor: pointer;
 }
 
 
-/* =========================
-   EDITOR
-========================= */
+/* EDITOR */
 
 .editor-panel {
     min-width: 0;
@@ -545,14 +527,11 @@ button {cursor: pointer;
 
 .empty-editor p {
     max-width: 350px;
-
     line-height: 1.6;
 }
 
 
-/* =========================
-   NOTE EDITOR
-========================= */
+/* NOTE EDITOR */
 
 .note-editor {
     height: 100%;
@@ -600,9 +579,7 @@ button {cursor: pointer;
 }
 
 
-/* =========================
-   TITLE & CONTENT
-========================= */
+/* TITLE & CONTENT */
 
 .note-title-input {
     width: 100%;
@@ -644,9 +621,7 @@ button {cursor: pointer;
 }
 
 
-/* =========================
-   EDITOR FOOTER
-========================= */
+/* EDITOR FOOTER */
 
 .editor-footer {
     display: flex;
@@ -668,9 +643,7 @@ button {cursor: pointer;
 }
 
 
-/* =========================
-   EMPTY NOTE LIST
-========================= */
+/* EMPTY NOTE LIST */
 
 .empty-notes {
     padding: 40px 20px;
@@ -687,9 +660,7 @@ button {cursor: pointer;
 }
 
 
-/* =========================
-   TABLET
-========================= */
+/* TABLET */
 
 @media (max-width: 1000px) {
 
@@ -716,9 +687,7 @@ button {cursor: pointer;
 }
 
 
-/* =========================
-   SMALL TABLET / LARGE PHONE
-========================= */
+/* SMALL TABLET / LARGE PHONE */
 
 @media (max-width: 768px) {
 
@@ -806,9 +775,7 @@ button {cursor: pointer;
 }
 
 
-/* =========================
-   PHONE
-========================= */
+/* PHONE */
 
 @media (max-width: 480px) {
 

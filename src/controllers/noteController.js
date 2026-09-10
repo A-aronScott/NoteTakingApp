@@ -109,6 +109,59 @@ export const createNote = async (req, res, next) => {
 
 export const updateNote = async (req, res, next) => {
     try {
+        const { title, content, tags, isPinned, isArchived } = req.body;
+
+        if (title !== undefined) {
+            if (typeof title !== "string" || title.trim().length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Title must be a non-empty string."
+                });
+            }
+
+            if (title.trim().length > 200) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Title must be 200 characters or less."
+                });
+            }
+        }
+
+        // Validate content if it was provided
+        if (content !== undefined && typeof content !== "string") {
+            return res.status(400).json({
+                success: false,
+                message: "Content must be a string."
+            });
+        }
+
+        if (tags !== undefined) {
+            if (
+                !Array.isArray(tags) ||
+                !tags.every((tag) => typeof tag === "string")
+            ) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Tags must be an array of strings."
+                });
+            }
+        }
+
+        if (isPinned !== undefined && typeof isPinned !== "boolean") {
+            return res.status(400).json({
+                success: false,
+                message: "isPinned must be a boolean."
+            });
+        }
+
+        // Validate isArchived if it was provided
+        if (isArchived !== undefined && typeof isArchived !== "boolean") {
+            return res.status(400).json({
+                success: false,
+                message: "isArchived must be a boolean."
+            });
+        }
+
         const note = await updateUserNote(
             req.params.id,
             req.user.id,

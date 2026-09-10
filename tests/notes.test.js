@@ -5,7 +5,6 @@ import app from "../src/app.js";
 import connectDatabase from "../src/config/database.js";
 
 describe("Notes API", () => {
-
     before(async () => {
         await connectDatabase();
     });
@@ -152,9 +151,11 @@ describe("Notes API", () => {
 
         expect(response.body.data).to.exist;
         expect(response.body.data._id).to.equal(noteId);
+
         expect(response.body.data.title).to.equal(
             "Single Note Test"
         );
+
         expect(response.body.data.content).to.equal(
             "This is a single note."
         );
@@ -217,11 +218,70 @@ describe("Notes API", () => {
         ]);
     });
 
+    it("should reject an empty title when updating a note", async () => {
+        const email = `invalid-update-title-${Date.now()}@example.com`;
+        const password = "password123";
+
+        const registerResponse = await request(app)
+            .post("/api/auth/register")
+            .send({
+                name: "Invalid Update Title User",
+                email,
+                password
+            });
+
+        expect(registerResponse.status).to.equal(201);
+
+        const token = registerResponse.body.data.token;
+
+        const response = await request(app)
+            .put("/api/notes/507f1f77bcf86cd799439011")
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                title: ""
+            });
+
+        expect(response.status).to.equal(400);
+        expect(response.body.success).to.equal(false);
+        expect(response.body.message).to.equal(
+            "Title must be a non-empty string."
+        );
+    });
+
+    it("should reject an invalid isPinned value when updating a note", async () => {
+        const email = `invalid-update-pinned-${Date.now()}@example.com`;
+        const password = "password123";
+
+        const registerResponse = await request(app)
+            .post("/api/auth/register")
+            .send({
+                name: "Invalid Update Pinned User",
+                email,
+                password
+            });
+
+        expect(registerResponse.status).to.equal(201);
+
+        const token = registerResponse.body.data.token;
+
+        const response = await request(app)
+            .put("/api/notes/507f1f77bcf86cd799439011")
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                isPinned: "yes"
+            });
+
+        expect(response.status).to.equal(400);
+        expect(response.body.success).to.equal(false);
+        expect(response.body.message).to.equal(
+            "isPinned must be a boolean."
+        );
+    });
+
     it("should delete an existing note", async () => {
         const email = `delete-note-${Date.now()}@example.com`;
         const password = "password123";
 
-        // Create a test user
         const registerResponse = await request(app)
             .post("/api/auth/register")
             .send({
@@ -272,7 +332,6 @@ describe("Notes API", () => {
         const userBEmail = `user-b-${Date.now()}@example.com`;
         const password = "password123";
 
-        // Create User A
         const userAResponse = await request(app)
             .post("/api/auth/register")
             .send({
@@ -285,7 +344,6 @@ describe("Notes API", () => {
 
         const tokenA = userAResponse.body.data.token;
 
-        // Create User B
         const userBResponse = await request(app)
             .post("/api/auth/register")
             .send({
@@ -464,191 +522,157 @@ describe("Notes API", () => {
         );
     });
 
-it("should reject deleting a note with an invalid ID", async () => {
-    const email = `invalid-delete-id-${Date.now()}@example.com`;
-    const password = "password123";
+    it("should reject deleting a note with an invalid ID", async () => {
+        const email = `invalid-delete-id-${Date.now()}@example.com`;
+        const password = "password123";
 
-    const registerResponse = await request(app)
-        .post("/api/auth/register")
-        .send({
-            name: "Invalid Delete ID User",
-            email,
-            password
-        });
+        const registerResponse = await request(app)
+            .post("/api/auth/register")
+            .send({
+                name: "Invalid Delete ID User",
+                email,
+                password
+            });
 
-    expect(registerResponse.status).to.equal(201);
+        expect(registerResponse.status).to.equal(201);
 
-    const token = registerResponse.body.data.token;
+        const token = registerResponse.body.data.token;
 
-    const response = await request(app)
-        .delete("/api/notes/not-a-real-id")
-        .set("Authorization", `Bearer ${token}`);
+        const response = await request(app)
+            .delete("/api/notes/not-a-real-id")
+            .set("Authorization", `Bearer ${token}`);
 
-    expect(response.status).to.equal(404);
-    expect(response.body.success).to.equal(false);
-    expect(response.body.message).to.equal(
-        "Note not found."
-    );
+        expect(response.status).to.equal(404);
+        expect(response.body.success).to.equal(false);
+        expect(response.body.message).to.equal(
+            "Note not found."
+        );
+    });
 
-});
+    it("should reject note content that is not a string", async () => {
+        const email = `invalid-content-${Date.now()}@example.com`;
+        const password = "password123";
 
-it("should reject note content that is not a string", async () => {
-    const email = `invalid-content-${Date.now()}@example.com`;
-    const password = "password123";
+        const registerResponse = await request(app)
+            .post("/api/auth/register")
+            .send({
+                name: "Invalid Content User",
+                email,
+                password
+            });
 
-    const registerResponse = await request(app)
-        .post("/api/auth/register")
-        .send({
-            name: "Invalid Content User",
-            email,
-            password
-        });
+        expect(registerResponse.status).to.equal(201);
 
-    expect(registerResponse.status).to.equal(201);
+        const token = registerResponse.body.data.token;
 
-    const token = registerResponse.body.data.token;
+        const response = await request(app)
+            .post("/api/notes")
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                title: "Test Note",
+                content: 12345
+            });
 
-    const response = await request(app)
-        .post("/api/notes")
-        .set("Authorization", `Bearer ${token}`)
-        .send({
-            title: "Test Note",
-            content: 12345
-        });
+        expect(response.status).to.equal(400);
+        expect(response.body.success).to.equal(false);
+        expect(response.body.message).to.equal(
+            "Note content must be a string."
+        );
+    });
 
-    expect(response.status).to.equal(400);
-    expect(response.body.success).to.equal(false);
-    expect(response.body.message).to.equal(
-        "Note content must be a string."
-    );
-});
+    it("should reject note tags that are not an array", async () => {
+        const email = `invalid-tags-${Date.now()}@example.com`;
+        const password = "password123";
 
-it("should reject note tags that are not an array", async () => {
-    const email = `invalid-tags-${Date.now()}@example.com`;
-    const password = "password123";
+        const registerResponse = await request(app)
+            .post("/api/auth/register")
+            .send({
+                name: "Invalid Tags User",
+                email,
+                password
+            });
 
-    const registerResponse = await request(app)
-        .post("/api/auth/register")
-        .send({
-            name: "Invalid Tags User",
-            email,
-            password
-        });
+        expect(registerResponse.status).to.equal(201);
 
-    expect(registerResponse.status).to.equal(201);
+        const token = registerResponse.body.data.token;
 
-    const token = registerResponse.body.data.token;
+        const response = await request(app)
+            .post("/api/notes")
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                title: "Test Note",
+                content: "Some content",
+                tags: "not-an-array"
+            });
 
-    const response = await request(app)
-        .post("/api/notes")
-        .set("Authorization", `Bearer ${token}`)
-        .send({
-            title: "Test Note",
-            content: "Some content",
-            tags: "not-an-array"
-        });
+        expect(response.status).to.equal(400);
+        expect(response.body.success).to.equal(false);
+        expect(response.body.message).to.equal(
+            "Note tags must be an array."
+        );
+    });
 
-    expect(response.status).to.equal(400);
-    expect(response.body.success).to.equal(false);
-    expect(response.body.message).to.equal(
-        "Note tags must be an array."
-    );
-});
+    it("should reject isPinned when it is not a boolean", async () => {
+        const email = `invalid-pinned-${Date.now()}@example.com`;
+        const password = "password123";
 
-it("should reject isPinned when it is not a boolean", async () => {
-    const email = `invalid-pinned-${Date.now()}@example.com`;
-    const password = "password123";
+        const registerResponse = await request(app)
+            .post("/api/auth/register")
+            .send({
+                name: "Invalid Pinned User",
+                email,
+                password
+            });
 
-    const registerResponse = await request(app)
-        .post("/api/auth/register")
-        .send({
-            name: "Invalid Pinned User",
-            email,
-            password
-        });
+        expect(registerResponse.status).to.equal(201);
 
-    expect(registerResponse.status).to.equal(201);
+        const token = registerResponse.body.data.token;
 
-    const token = registerResponse.body.data.token;
+        const response = await request(app)
+            .post("/api/notes")
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                title: "Test Note",
+                content: "Some content",
+                isPinned: "yes"
+            });
 
-    const response = await request(app)
-        .post("/api/notes")
-        .set("Authorization", `Bearer ${token}`)
-        .send({
-            title: "Test Note",
-            content: "Some content",
-            isPinned: "yes"
-        });
+        expect(response.status).to.equal(400);
+        expect(response.body.success).to.equal(false);
+        expect(response.body.message).to.equal(
+            "isPinned must be a boolean."
+        );
+    });
 
-    expect(response.status).to.equal(400);
-    expect(response.body.success).to.equal(false);
-    expect(response.body.message).to.equal(
-        "isPinned must be a boolean."
-    );
-});
+    it("should reject isArchived when it is not a boolean", async () => {
+        const email = `invalid-archived-${Date.now()}@example.com`;
+        const password = "password123";
 
-it("should reject isArchived when it is not a boolean", async () => {
-    const email = `invalid-archived-${Date.now()}@example.com`;
-    const password = "password123";
+        const registerResponse = await request(app)
+            .post("/api/auth/register")
+            .send({
+                name: "Invalid Archived User",
+                email,
+                password
+            });
 
-    const registerResponse = await request(app)
-        .post("/api/auth/register")
-        .send({
-            name: "Invalid Archived User",
-            email,
-            password
-        });
+        expect(registerResponse.status).to.equal(201);
 
-    expect(registerResponse.status).to.equal(201);
+        const token = registerResponse.body.data.token;
 
-    const token = registerResponse.body.data.token;
+        const response = await request(app)
+            .post("/api/notes")
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                title: "Test Note",
+                content: "Some content",
+                isArchived: "yes"
+            });
 
-    const response = await request(app)
-        .post("/api/notes")
-        .set("Authorization", `Bearer ${token}`)
-        .send({
-            title: "Test Note",
-            content: "Some content",
-            isArchived: "yes"
-        });
-
-    expect(response.status).to.equal(400);
-    expect(response.body.success).to.equal(false);
-    expect(response.body.message).to.equal(
-        "isArchived must be a boolean."
-    );
-});
-
-it("should reject isArchived when it is not a boolean", async () => {
-    const email = `invalid-archived-${Date.now()}@example.com`;
-    const password = "password123";
-
-    const registerResponse = await request(app)
-        .post("/api/auth/register")
-        .send({
-            name: "Invalid Archived User",
-            email,
-            password
-        });
-
-    expect(registerResponse.status).to.equal(201);
-
-    const token = registerResponse.body.data.token;
-
-    const response = await request(app)
-        .post("/api/notes")
-        .set("Authorization", `Bearer ${token}`)
-        .send({
-            title: "Test Note",
-            content: "Some content",
-            isArchived: "yes"
-        });
-
-    expect(response.status).to.equal(400);
-    expect(response.body.success).to.equal(false);
-    expect(response.body.message).to.equal(
-        "isArchived must be a boolean."
-    );
-});
-
+        expect(response.status).to.equal(400);
+        expect(response.body.success).to.equal(false);
+        expect(response.body.message).to.equal(
+            "isArchived must be a boolean."
+        );
+    });
 });
